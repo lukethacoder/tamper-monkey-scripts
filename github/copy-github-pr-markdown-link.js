@@ -1,7 +1,6 @@
 // ==UserScript==
 // @name        Copy GitHub PR Markdown Link
-// @icon        data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgMTZDMCA3LjE2IDcuMTYgMCAxNiAwQzI0Ljg0IDAgMzIgNy4xNiAzMiAxNkMzMiAxNi4zMzU4IDMxLjk4OTYgMTYuNjY5MyAzMS45NjkyIDE3SDI2LjExMjFDMjYuMTk1NyAxNi40NCAyNi4yNCAxNS44MjgzIDI2LjI0IDE1LjE2QzI2LjI0IDEzLjQgMjUuNjIgMTEuOTggMjQuNiAxMC44NkMyNC43NiAxMC40NiAyNS4zMiA4LjgyIDI0LjQ0IDYuNjJDMjQuNDQgNi42MiAyMy4xIDYuMTggMjAuMDQgOC4yNkMxOC43NiA3LjkgMTcuNCA3LjcyIDE2LjA0IDcuNzJDMTQuNjggNy43MiAxMy4zMiA3LjkgMTIuMDQgOC4yNkM4Ljk4IDYuMiA3LjY0IDYuNjIgNy42NCA2LjYyQzYuNzYgOC44MiA3LjMyIDEwLjQ2IDcuNDggMTAuODZDNi40NiAxMS45OCA1Ljg0IDEzLjQyIDUuODQgMTUuMTZDNS44NCAyMC42Mzg3IDguODIxMTkgMjIuMzE4NyAxMiAyMi44OTc2VjI1LjI0NDJDMTEuMDIyNCAyNS42NjMyIDguODMwMzUgMjYuMjE2NiA3LjQ0IDIzLjg4QzcuMTQgMjMuNCA2LjI0IDIyLjIyIDQuOTggMjIuMjRDMy42NCAyMi4yNiA0LjQ0IDIzIDUgMjMuM0M1LjY4IDIzLjY4IDYuNDYgMjUuMSA2LjY0IDI1LjU2QzYuOTU5NDcgMjYuNDU4NSA3Ljk5NjU1IDI4LjE3NDMgMTIgMjcuNDQzN1YzMC42ODE0QzExLjg5NTEgMzEuMDExNiAxMS41NzUxIDMxLjI5MTEgMTAuOTQgMzEuMThDNC41OCAyOS4wNiAwIDIzLjA4IDAgMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8Y2lyY2xlIGN4PSIyNiIgY3k9IjI2IiByPSI1IiBmaWxsPSIjRjlDNTEzIi8+Cjwvc3ZnPgo=
-// @version     1.0.0
+// @version     1.0.1
 //
 // @author      https://github.com/lukethacoder
 // @description Copies the current Pull Request as a markdown URL using Cmd/Ctrl + C or by clicking the PR title
@@ -13,6 +12,9 @@
 // ==/UserScript==
 
 (() => {
+  const titleSelector =
+    'h1 .js-issue-title, h1 .markdown-title, h1 [class*="markdownTitle"]';
+
   let toast;
   let toastTimer;
 
@@ -105,7 +107,7 @@
     }
 
     const title = document
-      .querySelector('.js-issue-title, .markdown-title')
+      .querySelector(titleSelector)
       ?.textContent.trim();
 
     if (!title) return null;
@@ -164,7 +166,7 @@
     ) return;
 
     const title = event.target instanceof Element
-      ? event.target.closest('.js-issue-title, .markdown-title')
+      ? event.target.closest(titleSelector)
       : null;
 
     if (!title || title.isContentEditable) return;
@@ -179,7 +181,7 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    :is(.js-issue-title, .markdown-title):not([contenteditable="true"]):hover {
+    :is(${titleSelector}):not([contenteditable="true"]):hover {
       cursor: pointer;
       text-decoration: underline;
       text-underline-offset: 3px;
